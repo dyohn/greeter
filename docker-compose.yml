@@ -1,0 +1,97 @@
+version: "3.8"
+
+##--------------------------------------------------------------------------------------
+## Common settins/extensions
+##
+
+##
+## Logging settings for every container
+##
+x-logging-settings:
+  &logging-settings
+  logging:
+    driver: "local"
+    options:
+      max-size: "128k"
+      max-file: "4"
+
+##
+## Most commmon service arguments can be set here, with the exceptio of the build
+## section. The nesting of the build section makes it difficult to parse, inherit, and
+## then override. The build section must be specified separately.
+##
+x-service-common:
+  &service-common
+  environment:
+    REDIS_HOST: redis
+    REDIS_PASSWORD:
+    REDIS_PORT: 6379
+    # Uncomment the next line to enable certs for services
+    #REQUESTS_CA_BUNDLE: $REQUESTS_CA_BUNDLE_DEV
+  init: true
+  ports:
+    - "8080"
+  restart: unless-stopped
+  volumes:
+    # - path/to/local/certs:/etc/tls/certs:ro
+    - /etc/localtime:/etc/localtime:ro # use local time instead of UTC
+
+##
+## Build arguments that have the same key and value in every service
+##
+x-service-build-args-common:
+  PRODUCT: Greeter
+  VERSION: 0.1.0.0
+  GID: $GID
+  UID: $UID
+  USER: $USER
+
+## The context directory, where the service Dockerfile lives
+x-service-context: &service-context src/
+
+## The target image in a multi-stage Dockerfile
+x-service-target: &service-target development
+
+##--------------------------------------------------------------------------------------
+## Base Services
+## Target Service Image: development
+## Hot-Reload Enabled: False
+##
+
+services:
+
+  greeter:
+    <<: *logging-settings
+    <<: *service-common
+    build:
+      args:
+        <<: *service-build-args-common
+        SERVICE: greeter.greeterApi:app
+        SERVICE_NAME: greeter
+        SERVICE_VERSION: 0.1.0.0
+      context: *service-context
+      target: *service-target
+
+  proxy:
+    <<: *logging-settings
+    build:
+      context: src/nginx
+      dockerfile: Dockerfile
+    ports:
+      # - $(PROXY_PORT): 8080
+      - 8080:8080
+    depends_on:
+      - greeter
+    volumes:
+      - /etc/locatime:/etc/localtime:ro
+      # - local/cert/path: container/cert/path
+  
+  redis:
+    <<: *logging-settings
+    build:
+      context: src/redis
+    volumes:
+      - ./src/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./src/redis/redis-data:/data
+      - /etc/localtime:/etc/locatime:ro
+      # - local/cert/path: container/cert/path

@@ -1,0 +1,61 @@
+##
+## Purpose:
+## The following items should never be sent to the Docker daemon or copied into an image
+## if the build context is the project's root directory. This is for performance and
+## security reasons.
+##
+
+##
+## Version control configuration and artifacts
+##
+**/.git
+**/.gitignore
+**/.gitattributes
+
+##
+## Python bytecode
+##
+**/*.pyc
+**/__pycache__
+
+## Virtual environment
+**/.venv
+
+## Linting configuration
+**.pylintrc
+
+## Pyre/Pysa configuration
+**/.pyre
+**/.pyre_configuration
+**/.pyre_output
+**/.pysa
+**/.pysa_output
+**/.pytest_cache
+**/.watchmanconfig
+
+## Docker configuration
+## NOTE: Dockerfiles and compose files are still sent to the daemon for processing, but
+## this prevents them from being copied into an image
+**/.dockerignore
+**/docker-compose*
+**/compose*
+**/Dockerfile*
+
+## Compose/developer secrets
+**/.env
+
+## Build configurations/automations
+**/Makefile
+
+## Documentation
+**/docs
+
+## Tests and test config
+**/pytest.ini
+**/test
+
+## Miscellaneous
+**/*.md
+**/*.sample
+**/*README*
+**/header.stub
