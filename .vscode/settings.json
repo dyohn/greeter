@@ -1,0 +1,27 @@
+{
+    "editor.bracketPairColorization.enabled": true,
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "editor.guides.bracketPairs": true,
+    "editor.minimap.maxColumn": 88,
+    "editor.rulers": [
+        88
+    ],
+    "pylint.args": ["--rcfile=${workspaceFolder}/.pylintrc"],
+    "pylint.importStrategy": "fromEnvironment",
+    "python.analysis.autoSearchPaths": true,
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/src",
+        "${workspaceFolder}/test"
+    ],
+    "python.autoComplete.extraPaths": [
+        "${workspaceFolder}/src",
+        "${workspaceFolder}/test"
+    ],
+    "python.envFile": "${workspaceFolder}/.env",
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "python.terminal.activateEnvironment": true,
+    "python.testing.pytestEnabled": true,
+    "python.testing.pytestPath": "${workspaceFolder}/.venv/bin/pytest",
+}
